@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <title>squat_logout</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+  <link rel="stylesheet" href="css/bootstrap.css">
+  <link rel="stylesheet" href="css/navbar/sidevar.css">
+  <link href="https://fonts.googleapis.com/css2?family=Oswald&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Lato&display=swap" rel="stylesheet">
+  <script src="https://kit.fontawesome.com/a076d05399.js"></script>
+ 
+</head>
+<body>
+
+  <!--스크립트 부분. 자신의 스크립트 코드로 변경하세요! -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script type="text/javascript" src="js/bootstrap.js"></script>
+
+<script src="https://www.gstatic.com/firebasejs/8.6.5/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.6.5/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.6.5/firebase-firestore.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.6.5/firebase-storage.js"></script>
+<script src="https://www.gstatic.com/firebasejs/4.10.1/firebase.js"></script>
+<script>
+    var firebaseEmailAuth; //파이어베이스 email 인증 모듈 전역변수
+
+    //파이어 베이스 초기화 코드
+    const firebaseConfig = {
+        apiKey: "AIzaSyCgxgXoIvYsy0jqugTu_mBpy1OspsaUGCg",
+        authDomain: "test-900db.firebaseapp.com",
+        databaseURL: "https://test-900db-default-rtdb.firebaseio.com",
+        projectId: "test-900db",
+        storageBucket: "test-900db.appspot.com",
+        messagingSenderId: "668651633244",
+        appId: "1:668651633244:web:fad0f4735eda521c558499",
+        measurementId: "G-H42PPWY24J"
+        };
+        
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig) 
+    //인증모듈 객체 가져오기
+    firebaseEmailAuth = firebase.auth();
+
+    firebaseEmailAuth.signOut().then(function() {
+                alert("로그아웃 되었습니다")
+                //메인 페이지로 이동시키고 세션 저장시키기
+                window.location.href = "/index.html"
+                    
+        }).catch(function(error) {
+        if(error){
+                alert("로그인 실패");
+        }
+    });
+
+</script> 
+
+</body>
+</html>

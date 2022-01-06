@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link type="text/css" rel="stylesheet" href="css/login/materialize.min.css"  media="screen,projection"/>
+    <link rel="stylesheet" href="css/login/custom.css">
+    <link rel="stylesheet" href="css/bootstrap.css">
+    <link rel="stylesheet" href="css/navbar/sidevar.css">
+    <link href="https://fonts.googleapis.com/css2?family=Oswald&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Lato&display=swap" rel="stylesheet">
+    <script src="https://kit.fontawesome.com/a076d05399.js"></script>
+    
+
+
+    <title>squat</title>
+</head>
+<body>
+<div>
+<input type="checkbox" id="active">
+<label for="active" class="menu-btn"><span></span></label>
+<label for="active" class="close"></label>
+<div class="wrax`pper">
+  <ul>
+    <li><a href="index.html">Home</a></li>
+    <li><a id = "loginmenu" href="login.html">Login</a></li>
+    <li><a href="squat.html">Squat</a></li>
+    <li><a href="record.html">Record</a></li>
+    <li><a href="mypage.html">Mypage</a></li>
+</ul>
+</div>
+</div>
+<br>
+<br>
+<br>
+
+
+<div id="dvAuth">
+    <div id="dvLogin">
+        <div id="dvSocial">
+            <ul class="btnGroup">
+                <li id="liGoogleBtn" class="waves-effect waves-teal btn-flat goologin"><i></i>구글 계정으로 가입 및 로그인</li>
+                <li id="liFacebookBtn" class="waves-effect waves-teal btn-flat facelogin"><i></i>페이스북 계정으로 가입 및 로그인</li>
+            </ul>
+            <em class="or">or</em>
+        </div>
+        <div id="userEmail">
+            <input type="email" id="email" name="userName" class="input-text" placeholder="이메일 아이디">
+            <input type="password" id="pwd" name="password" class="input-text" maxlength="17" placeholder="비밀번호">
+            <ul class="btnGroup">
+                <li id="liEmailBtn" class="waves-effect waves-teal btn-flat login">이메일으로 로그인</li>
+            </ul>
+            <ul class="btnGroup">
+                <li id="liEmailJoin" class="waves-effect waves-teal btn-flat emailjoin" >이메일으로 가입</li>
+            </ul>
+        </div>
+    </div>
+  </div>
+
+ <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+ <script type="text/javascript" src="js/bootstrap.js"></script>
+
+ <script src="https://www.gstatic.com/firebasejs/8.6.5/firebase-app.js"></script>
+ <script src="https://www.gstatic.com/firebasejs/8.6.5/firebase-auth.js"></script>
+ <script src="https://www.gstatic.com/firebasejs/8.6.5/firebase-firestore.js"></script>
+ <script src="https://www.gstatic.com/firebasejs/8.6.5/firebase-storage.js"></script>
+ <script src="https://www.gstatic.com/firebasejs/4.10.1/firebase.js"></script>
+
+
+ <script>
+    var firebaseEmailAuth; //파이어베이스 email 인증 모듈 전역변수
+    var firebaseDatabase; //파이어베이스 db 모듈 전역변수
+    var userInfo; //가입한 유저의 정보. object 타입
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyCgxgXoIvYsy0jqugTu_mBpy1OspsaUGCg",
+        authDomain: "test-900db.firebaseapp.com",
+        databaseURL: "https://test-900db-default-rtdb.firebaseio.com",
+        projectId: "test-900db",
+        storageBucket: "test-900db.appspot.com",
+        messagingSenderId: "668651633244",
+        appId: "1:668651633244:web:fad0f4735eda521c558499",
+        measurementId: "G-H42PPWY24J"
+    };
+  
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig) 
+
+    firebaseEmailAuth = firebase.auth();
+    firebaseDatabase = firebase.database();
+
+    $(document).ready(function(){
+      
+      //가입버튼 눌렀을 때
+      $(document).on('click', '.emailjoin',function(){
+            window.location.href = "join.html"
+            }  
+        )
+        $(document).on('click','.login',function(){
+        
+            //제이쿼리 선택자와 val() 함수를 이용해서 이메일,비밀번호 값을 가져온다. 
+            var email = $('#email').val();
+            var password = $('#pwd').val();
+            //alert("로그인 버튼 눌렸음" + email +":"+ password);
+            
+            //파이어베이스 이메일 로그인 함수
+            firebaseEmailAuth.signInWithEmailAndPassword(email, password)
+        .then(function(firebaseUser) {
+        
+            //성공하면 firebaseUser에 유저 정보 값이 담겨 넘어온다.
+            loginSuccess(firebaseUser);
+        
+        })
+        .catch(function(error) {
+            // 실패했을 때 에러 처리
+            alert("아이디나 비밀번호가 일치하지 않습니다.");
+            //alert("로그인 실패");
+        });
+    
+      });
+        $(document).on('click', '.goologin',function(){
+            var authProvider = new firebase.auth.GoogleAuthProvider();
+            firebaseEmailAuth.signInWithPopup(authProvider);
+            firebaseEmailAuth.onAuthStateChanged(function(user){
+            if (user) {
+                alert("로그인 성공");
+                console.log("success");
+                console.log(user.uid)
+                console.log(user.displayName)
+                console.log(user.email)
+                var ref = firebaseDatabase.ref("users/"+user.uid);
+                var obj = {
+                    name: user.displayName,
+                    email : user.email,
+                    height: 0,
+                    weight: 0,
+
+                    
+                };
+
+                ref.set(obj);
+
+                console.log(user)
+                window.location.href = "/index.html"
+
+            }else{
+                // 인증 실패
+        }
+    })
+
+        })
+        $(document).on('click', '.facelogin',function(){
+            var facebookProvider = new firebase.auth.FacebookAuthProvider();
+            firebase.auth().setPersistence(firebase.auth.Auth.Persistence.SESSION)
+            firebaseEmailAuth.signInWithPopup(facebookProvider).then(function(user){
+                firebaseEmailAuth.onAuthStateChanged(function(user){
+                if (user) {
+                    alert("로그인 성공");
+                    console.log("success");
+                    console.log(user.uid)
+                    
+                    var ref = firebaseDatabase.ref("users/"+user.uid);
+                    var obj = {
+                        name: user.displayName,
+                        email : user.email,
+                        height: 0,
+                        weight: 0,
+             
+                    };
+
+                    ref.set(obj);
+                    window.location.href = "/index.html"
+                }
+                else{
+                    //인증실패
+                }
+            })
+
+                })
+            
+            })
+        })
+    //로그인 성공했을 때
+    function loginSuccess(firebaseUser){
+       alert("로그인 성공");
+ 
+    //로그인 성공한 유저 id 확인해 보기 - firebase database에 접근해서 데이터 조회 하는 함수
+   firebaseDatabase.ref("users/"+firebaseUser.uid).once('value').then(function(snapshot){
+        //alert(snapshot.val().name)
+    });
+ 
+    //메인 페이지로 이동
+    window.location.href = "/index.html"
+    }
+
+
+ </script>
+
+
+
+
+</body>
+</html>

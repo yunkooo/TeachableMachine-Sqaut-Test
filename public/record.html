@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="css/bootstrap.css">
+    <link rel="stylesheet" href="css/record/style.css">
+    <link rel="stylesheet" href="css/navbar/sidevar.css">
+    <link href="https://fonts.googleapis.com/css2?family=Oswald&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Lato&display=swap" rel="stylesheet">
+    <!-- <script src="https://kit.fontawesome.com/a076d05399.js"></script> -->
+
+
+    <title id="titleCheck">squat</title>
+</head>
+<body>
+  <div >
+    <input type="checkbox" id="active">
+<label for="active" class="menu-btn"><span></span></label>
+<label for="active" class="close"></label>
+<div class="wrapper" style="z-index: 1;">
+  <ul>
+    <li><a href="index.html">Home</a></li>
+    <li><a id = "loginmenu" href="login.html">Login</a></li>
+    <li><a href="squat.html">Squat</a></li>
+    <li><a href="record.html">Record</a></li>
+    <li><a href="mypage.html">Mypage</a></li>
+</ul>
+</div>
+</div>
+<!-- 감사리스트 출력하기-->
+<div class="container">
+
+<br>
+    <h3>운동 기록</h3>
+    <br>
+
+    <!-- 감사 리스트 붙일 곳 -->
+    <div style="z-index: 2" class="thanksList"></div>
+
+  </div>
+
+
+    <script src="js/time.js"></script>
+
+    <!-- <script src="js/sessionCheck.js"></script> -->
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script type="text/javascript" src="js/bootstrap.js"></script>
+    <!-- <script src="js/auth-state-persistence.js"></script> -->
+
+    <script src="https://www.gstatic.com/firebasejs/8.6.5/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.5/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.5/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.5/firebase-storage.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/4.10.1/firebase.js"></script>
+
+    <script>
+    var firebaseEmailAuth; //파이어베이스 email 인증 모듈 전역변수
+    var firebaseDatabase; //파이어베이스 db 모듈 전역변수
+    
+    
+
+    var name; //유저 이름
+    var loginUserKey; //로그인한 유저의 부모 key
+    var userInfo; //로그인한 유저의 정보 object type
+    var count; //유저가 저장한 갯수
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyCgxgXoIvYsy0jqugTu_mBpy1OspsaUGCg",
+      authDomain: "test-900db.firebaseapp.com",
+      databaseURL: "https://test-900db-default-rtdb.firebaseio.com",
+      projectId: "test-900db",
+      storageBucket: "test-900db.appspot.com",
+      messagingSenderId: "668651633244",
+      appId: "1:668651633244:web:fad0f4735eda521c558499",
+      measurementId: "G-H42PPWY24J"
+    };
+      
+        // Initialize Firebase
+    firebase.initializeApp(firebaseConfig) 
+
+  firebaseEmailAuth = firebase.auth();
+  firebaseDatabase = firebase.database();
+  $(document).ready(function(){
+    userSessionCheck(); 
+    setTimeout(function(){
+      myThanksList();
+    }, 1000);
+  }); 
+
+function userSessionCheck() {
+      firebaseEmailAuth.onAuthStateChanged(function(user){
+        if(user){
+          firebaseDatabase.ref("users/" + user.uid).once('value').then(function(snapshot){
+            document.getElementById("loginmenu").textContent = "logout";
+            document.getElementById("loginmenu").href = "/logout.html";
+
+            name = snapshot.val().name;
+            loginUserKey = snapshot.key;
+            userInfo = snapshot.val();
+
+            return true
+          });
+        } else{
+          return false
+        }
+      });
+    }
+     
+//감사글 목록가져와서 뿌려주기
+function myThanksList() {
+      //alert("thanksList")
+      //로그인한 유저라면
+          var thanksRef = firebaseDatabase.ref('record');
+          //on 함수로 글 목록가져오기
+          thanksRef.on('child_added', on_thanks_list)
+    }
+    
+ //땡스리스트 thanks 테이블의 thanks 키 들을 연속적으로 가져온다.
+ function on_thanks_list(data) {
+    console.log(loginUserKey)
+    console.log(data.val().userkey)
+  
+      //console.log("on_thanks_list() 함수안으로 들어왔습니다 리스트를 가져오겠습니다")
+      if (loginUserKey == data.val().userkey){
+      var key = data.key;
+      var Data = data.val();
+      var count = Data.count;
+      var createtime = Data.createtime;
+      var name = Data.name;
+      var userkey = Data.userkey;
+
+
+      //alert(comment +"/"+ createtime + "/"+name +"/"+userkey)
+      //var mod_btn_key = key + "mod_btn"
+
+      //감사리스트 동적으로 붙이기
+      var html =
+      "<div style=\"z-index: 2;\>"+
+      " <div class=\"py-5\>"+
+    "<div class=\"row\">"+ 
+      "<div class=\"col-lg-9 mx-auto\">"+
+        "<div class=\"card shadow mb-4\">"+
+          "<div class=\"card-body shadow-sm p-5\">"+
+
+            "<nav aria-label=\"breadcrumb\">"+
+              "<ol class=\"breadcrumb\">"+
+                // "<li class=\"breadcrumb-item\">"+"<a class=\"text-uppercase\">"+name + "</a>"+"</li>"+
+                // "<li class=\"breadcrumb-item\">"+"<a class=\"text-uppercase\">"+ createtime + "</a>" + "</li>" +
+                "<li aria-current=\"page\" class=\"breadcrumb-item active text-uppercase\">"+createtime + "</li>"+
+             " </ol>"+
+            "</nav>"+
+            "<h5 class=\"text-muted text-name\">"+name +"</h5>"+
+           " <p class=\"font-italic text-muted text-count\">"+count + "개" +"</p>"+
+          "</div>"+
+        "</div>"
+
+
+
+      $(".thanksList").append(html);
+        }
+    }
+</script>
+
+
+
+  </body>
+  </html>
