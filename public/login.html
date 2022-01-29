@@ -14,31 +14,13 @@
     <link href="https://fonts.googleapis.com/css2?family=Lato&display=swap" rel="stylesheet">
     <script src="https://kit.fontawesome.com/a076d05399.js"></script>
     
-
-
     <title>squat</title>
 </head>
 <body>
-<div>
-<input type="checkbox" id="active">
-<label for="active" class="menu-btn"><span></span></label>
-<label for="active" class="close"></label>
-<div class="wrax`pper">
-  <ul>
-    <li><a href="index.html">Home</a></li>
-    <li><a id = "loginmenu" href="login.html">Login</a></li>
-    <li><a href="squat.html">Squat</a></li>
-    <li><a href="record.html">Record</a></li>
-    <li><a href="mypage.html">Mypage</a></li>
-</ul>
-</div>
-</div>
-<br>
-<br>
-<br>
-
 
 <div id="dvAuth">
+    <br>
+    <br>
     <div id="dvLogin">
         <div id="dvSocial">
             <ul class="btnGroup">
@@ -60,6 +42,7 @@
     </div>
   </div>
 
+  <!--jquery, js, firebase-->
  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
  <script type="text/javascript" src="js/bootstrap.js"></script>
 
@@ -71,10 +54,11 @@
 
 
  <script>
-    var firebaseEmailAuth; //파이어베이스 email 인증 모듈 전역변수
-    var firebaseDatabase; //파이어베이스 db 모듈 전역변수
-    var userInfo; //가입한 유저의 정보. object 타입
+    var firebaseEmailAuth; //firebase email 인증 모듈 전역변수
+    var firebaseDatabase; //firebase db 모듈 전역변수
+    var userInfo; //사용자 정보
 
+    //firebase 정보
     const firebaseConfig = {
         apiKey: "AIzaSyCgxgXoIvYsy0jqugTu_mBpy1OspsaUGCg",
         authDomain: "test-900db.firebaseapp.com",
@@ -88,45 +72,42 @@
   
     // Initialize Firebase
     firebase.initializeApp(firebaseConfig) 
-
+    // firebase 인증 모듈
     firebaseEmailAuth = firebase.auth();
+    // firebase db 모듈
     firebaseDatabase = firebase.database();
 
     $(document).ready(function(){
       
-      //가입버튼 눌렀을 때
+      // '이메일으로 로그인' 버튼 눌렀을 때
       $(document).on('click', '.emailjoin',function(){
             window.location.href = "join.html"
             }  
         )
-        $(document).on('click','.login',function(){
-        
-            //제이쿼리 선택자와 val() 함수를 이용해서 이메일,비밀번호 값을 가져온다. 
+        $(document).on('click','.login',function(){ 
             var email = $('#email').val();
             var password = $('#pwd').val();
-            //alert("로그인 버튼 눌렸음" + email +":"+ password);
             
-            //파이어베이스 이메일 로그인 함수
+            //firebase 이메일 로그인 함수
             firebaseEmailAuth.signInWithEmailAndPassword(email, password)
         .then(function(firebaseUser) {
-        
-            //성공하면 firebaseUser에 유저 정보 값이 담겨 넘어온다.
-            loginSuccess(firebaseUser);
-        
+            loginSuccess(firebaseUser);    
         })
         .catch(function(error) {
             // 실패했을 때 에러 처리
             alert("아이디나 비밀번호가 일치하지 않습니다.");
-            //alert("로그인 실패");
         });
     
       });
+        // '구글계정으로 로그인' 버튼 눌렀을 때
         $(document).on('click', '.goologin',function(){
+            // 구글을 통한 인증 함수 설정
             var authProvider = new firebase.auth.GoogleAuthProvider();
             firebaseEmailAuth.signInWithPopup(authProvider);
             firebaseEmailAuth.onAuthStateChanged(function(user){
             if (user) {
                 alert("로그인 성공");
+                // 성공했을때 유저정보를 가져온다
                 console.log("success");
                 console.log(user.uid)
                 console.log(user.displayName)
@@ -137,8 +118,6 @@
                     email : user.email,
                     height: 0,
                     weight: 0,
-
-                    
                 };
 
                 ref.set(obj);
@@ -147,12 +126,14 @@
                 window.location.href = "/index.html"
 
             }else{
-                // 인증 실패
+                // 로그인 실패
         }
     })
 
         })
+        // '페이스북 계정으로 로그인' 버튼 눌렀을 때
         $(document).on('click', '.facelogin',function(){
+            // 페이스북을 통한 인증 함수 설정
             var facebookProvider = new firebase.auth.FacebookAuthProvider();
             firebase.auth().setPersistence(firebase.auth.Auth.Persistence.SESSION)
             firebaseEmailAuth.signInWithPopup(facebookProvider).then(function(user){
@@ -160,6 +141,7 @@
                 if (user) {
                     alert("로그인 성공");
                     console.log("success");
+                    // 성공했을때 유저정보를 가져온다
                     console.log(user.uid)
                     
                     var ref = firebaseDatabase.ref("users/"+user.uid);
@@ -168,14 +150,13 @@
                         email : user.email,
                         height: 0,
                         weight: 0,
-             
                     };
 
                     ref.set(obj);
                     window.location.href = "/index.html"
                 }
                 else{
-                    //인증실패
+                    // 로그인 실패
                 }
             })
 
@@ -187,9 +168,7 @@
     function loginSuccess(firebaseUser){
        alert("로그인 성공");
  
-    //로그인 성공한 유저 id 확인해 보기 - firebase database에 접근해서 데이터 조회 하는 함수
    firebaseDatabase.ref("users/"+firebaseUser.uid).once('value').then(function(snapshot){
-        //alert(snapshot.val().name)
     });
  
     //메인 페이지로 이동
@@ -198,9 +177,5 @@
 
 
  </script>
-
-
-
-
 </body>
 </html>

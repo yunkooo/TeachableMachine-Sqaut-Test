@@ -1,5 +1,7 @@
 {
   "projects": {
-    "default": "test-900db"
-  }
+    "default": "test-900db",
+    "test": "test-900db"
+  },
+  "targets": {}
 }

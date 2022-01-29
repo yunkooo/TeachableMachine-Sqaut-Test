@@ -2,12 +2,12 @@
  function changeButtonAction(){
     console.log("버튼이 눌렀습니다");
     var changeBtn = document.getElementById("changeBtn");
-    var changeBtnText = changeBtn.textContent; //버튼의 text제목을 가져온다.
+    var changeBtnText = changeBtn.textContent; 
     
-    //버튼이 수정하기 버튼이면
+    //수정하기 버튼 일 경우
     if (changeBtnText == "수정하기") {
 
-        //기존에 한줄 메시지 없애주고, 새로운 input text 붙여주기
+        //기존 메시지 삭제하고, 새로운 input text 붙여주기
         var heightParent = document.getElementById("heightP");
         var heightChild = document.getElementById("height");
 
@@ -35,7 +35,6 @@
         //저장하기 함수 호출
         console.log("저장하기 함수 호출");
 
-
         var changeHeight = document.getElementById("height").value;
         var changeWeight = document.getElementById("weight").value;
 
@@ -53,8 +52,6 @@
             var weightChild = document.getElementById("weight");
             weightParent.removeChild(weightChild);
 
-
-    
             //p태그에 수정한 한줄 메시지 넣어주기
             var heightHtml = "<p id=\"height\">" + changeHeight + "</p>";
             var weightHtml = "<p id=\"weight\">" + changeWeight + "</p>";
@@ -71,17 +68,15 @@
 
     }
 }
-
-
-
+// 정보 수정 함수
 function stateSave(height,weight) {
     firebaseEmailAuth.onAuthStateChanged(function (user){
         if(user){
             firebaseDatabase.ref("users/" + user.uid).once('value').then(function(snapshot){
-                name = snapshot.val().name;   //유저 닉네임은 계속 쓸거기 때문에 전역변수로 할당
-                email = user.email;   //유저 닉네임은 계속 쓸거기 때문에 전역변수로 할당
-                loginUserKey = snapshot.key;  //로그인한 유저의 key도 계속 쓸 것이기 때문에 전역변수로 할당
-                userInfo = snapshot.val(); //snapshot.val()에 user 테이블에 있는 해당 개체 정보가 넘어온다. userInfo에 대입!
+                name = snapshot.val().name;   
+                email = user.email;  
+                loginUserKey = snapshot.key; 
+                userInfo = snapshot.val();
                 userHeight = snapshot.val().height
                 userWeight = snapshot.val().weight
                 userRef = firebaseDatabase.ref("users/" + loginUserKey);
@@ -93,10 +88,7 @@ function stateSave(height,weight) {
                 };
                 userRef.update(obj)
             })
-                  
         }
-
-  
     })
     return true;
 

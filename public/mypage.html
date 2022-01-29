@@ -9,8 +9,8 @@
     <link rel="stylesheet" href="css/navbar/sidevar.css">
     <link rel="stylesheet" href="css/mypage/mypage.css">
     <link href="https://fonts.googleapis.com/css2?family=Oswald&display=swap" rel="stylesheet">
-    <!-- <link href="https://fonts.googleapis.com/css2?family=Lato&display=swap" rel="stylesheet"> -->
     <script src="https://kit.fontawesome.com/a076d05399.js"></script>  
+    
     <script src="js/sessionCheck.js"></script>
     <script src="js/chageButton.js"></script>
 
@@ -18,7 +18,7 @@
   <title id = "titleCheck">mypage</title>
 </head>
 <body>
-
+  <!--사이드바 메뉴-->
   <input type="checkbox" id="active">
   <label for="active" class="menu-btn"><span></span></label>
   <label for="active" class="close"></label>
@@ -32,7 +32,7 @@
    </ul>
   </div>
 
-
+  <!--profile design-->
   <div class="container d-flex justify-content-center mt-5" style="z-index: 2;">
     <div class="card">
         <div class="top-container"> <img src="image/pngwing.com.png" class="img-fluid profile-image" width="70">
@@ -50,12 +50,8 @@
         <div class="wishlist-border pt-2"> <span class="wishlist">키</span> <p id="heightP"><span id ="height">none</span></p> 
           <span>몸무게</span> <p id="weightP"><span id = "weight">none</span> </p></div>
         <button id="changeBtn" type="button" class="btn btn-warning">수정하기</button>
-        <!-- <div class="fashion-studio-border pt-2"> <span class="fashion-studio">Fashion studio</span> </div> -->
     </div>
   </div>
-
-
-
 
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
   <script type="text/javascript" src="js/bootstrap.js"></script>
@@ -68,14 +64,14 @@
 
 
   <script>
-    var firebaseEmailAuth; //파이어베이스 email 인증 모듈 전역변수
-    var firebaseDatabase; //파이어베이스 db 모듈 전역변수
-    var name; //유저 이름
-    var loginUserKey; //로그인한 유저의 부모 key
-    var userInfo; //로그인한 유저의 정보 object type  
-    var testCount = 0 ;
+    var firebaseEmailAuth; //firebase email 인증 모듈 전역변수
+    var firebaseDatabase; //firebase db 모듈 전역변수
+    var name; //사용자 이름
+    var loginUserKey; //사용자 key
+    var userInfo; //사용자 정보
+    var testCount = 0 ; //유저 스쿼트 초기 개수
 
-
+    //firebase 정보
     const firebaseConfig = {
       apiKey: "AIzaSyCgxgXoIvYsy0jqugTu_mBpy1OspsaUGCg",
       authDomain: "test-900db.firebaseapp.com",
@@ -89,24 +85,25 @@
   
     // Initialize Firebase
     firebase.initializeApp(firebaseConfig) 
-
+    // firebase 인증 모듈
     firebaseEmailAuth = firebase.auth();
+    // firebase db 모듈
     firebaseDatabase = firebase.database();
     
   </script>
 
   <script>
     $(document).ready(function () {
-        //세션체크 함수먼저 호출!
+        //로그인 체크
         userSessionCheck();
         setTimeout(function(){
             countdown();
           }, 1000);
 
     });
-
+    // profile 수정 버튼
     $(document).on('click', '#changeBtn', function () {
-                changeButtonAction();
+      changeButtonAction();
               });
   </script>
 
@@ -116,12 +113,11 @@
       countRef.on('child_added', on_count_list)
       
     }
-
+    // 유저 정보가 로그인정보와 일치할 경우 가져오기
     function on_count_list(data) {
     console.log(loginUserKey)
     console.log(data.val().userkey)
   
-      //console.log("on_thanks_list() 함수안으로 들어왔습니다 리스트를 가져오겠습니다")
       if (loginUserKey == data.val().userkey){
       var key = data.key;
       var Data = data.val();
@@ -138,17 +134,13 @@
           }, 3000);
 
           
-
+  // squat count 갯수 입력
   function test(){
     console.log(testCount)
     var html = " " + testCount + " "   
     $(".dollar-sign").append(html);
-    console.log("여기입니다")
   }
   </script>
-
-
-  
 
 </body>
 </html>

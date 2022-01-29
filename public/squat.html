@@ -4,8 +4,6 @@
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-
-    <!-- Required meta tags -->
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
     <link rel="stylesheet" href="css/bootstrap.css">
@@ -20,10 +18,8 @@
 </head>
 
 <body>
-    <!-- <script src="js/sessionCheck.js"></script> -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script type="text/javascript" src="js/bootstrap.js"></script>
-    <!-- <script src="js/auth-state-persistence.js"></script> -->
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@1.3.1/dist/tf.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/pose@0.8/dist/teachablemachine-pose.min.js"></script>
     
@@ -34,16 +30,15 @@
     <script src="https://www.gstatic.com/firebasejs/4.10.1/firebase.js"></script>
     
     <script>
+        var name; //사용자 이름
+        var loginUserKey; //사용자 key
+        var userInfo; //사용자 정보
+        var count; //측정 갯수
+        var createtime;
+        var meTime;
+        var userkey;
 
-    var name; //유저 이름
-    var loginUserKey; //로그인한 유저의 부모 key
-    var userInfo; //로그인한 유저의 정보 object type
-    var count; //측정값 저장
-    var createtime;
-    var meTime;
-    var userkey;
-
-
+    //firebase 정보
     const firebaseConfig = {
       apiKey: "AIzaSyCgxgXoIvYsy0jqugTu_mBpy1OspsaUGCg",
       authDomain: "test-900db.firebaseapp.com",
@@ -54,14 +49,15 @@
       appId: "1:668651633244:web:fad0f4735eda521c558499",
       measurementId: "G-H42PPWY24J"
     }; 
-        // Initialize Firebase
+    // Initialize Firebase
     firebase.initializeApp(firebaseConfig) 
-    
+    // firebase 인증 모듈
     firebaseEmailAuth = firebase.auth();
+    // firebase db 모듈
     firebaseDatabase = firebase.database();
     
     userSessionCheck();
-    
+    //로그인 체크 함수
     function userSessionCheck() {
     firebaseEmailAuth.onAuthStateChanged(function(user){
     if(user){
@@ -84,6 +80,7 @@
     }
     
     </script>
+    <!--사이드바 메뉴-->
 <div>
     <input type="checkbox" id="active">
     <label for="active" class="menu-btn"><span></span></label>
@@ -107,9 +104,7 @@
                     <div class="text">
                         <span id="counter">0</span>개
                     </div>
-                    
                     <svg>
-                        <!--<circle class="bg" cx="57" cy="57" r="52" />-->
                         <circle class="progress" cx="57" cy="57" r="52" />
                     </svg>
                 </div>
@@ -128,21 +123,11 @@
         <div id="label-container"></div>
     </div>
     
-    
-
-
-    <!-- Optional JavaScript -->
-    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-
-
     <script src="js/time.js"></script>
-    
     <script type="text/javascript">
 
-    
         // More API functions here:
         // https://github.com/googlecreativelab/teachablemachine-community/tree/master/libraries/pose
-
         // the link to your model provided by Teachable Machine export panel
         const URL = "./my_model/";
         let model, webcam, ctx, labelContainer, maxPredictions;
@@ -191,10 +176,7 @@
             const prediction = await model.predict(posenetOutput);
             if (prediction[0].probability.toFixed(2) > 0.95) {
                 if (status == "squat") {
-                    count++
-                    /*var audio = new Audio(count % 10 + '.mp3');
-                    audio.play();*/
-                    
+                    count++                
                     progress = progress-32.7
                     if(progress <= 0) {
                         progress = 327-32.7
@@ -206,10 +188,6 @@
             } else if (prediction[1].probability.toFixed(2) > 0.90) {
                 status = "squat"
             } else if (prediction[2].probability.toFixed(2) == 0.95) {
-                /*if (status == "squat" || status == "stand") {
-                    var audio = new Audio('bent.mp3');
-                    audio.play();
-                }*/
                 status = "bent"
             }
             for (let i = 0; i < maxPredictions; i++) {
@@ -221,7 +199,7 @@
             // finally draw the poses
             drawPose(pose);
         }
-        
+        // 운동 기록 저장 함수
         function save() {
             firebaseEmailAuth.onAuthStateChanged(function(user){
                 if(user){
@@ -255,7 +233,7 @@
             }
         }
     </script>
-
+<!--스탑워치-->
 <div class="container">
     <h1 class="screen">
       <span id="minutes">
@@ -275,6 +253,5 @@
   <script src="js/stopwatch.js"></script>
 
 </body>
-
 
 </html>

@@ -19,21 +19,6 @@
 </head>
 <body>
 
-  <input type="checkbox" id="active">
-  <label for="active" class="menu-btn"><span></span></label>
-  <label for="active" class="close"></label>
-  <div class="wrapper">
-    <ul>
-      <li><a href="index.html">Home</a></li>
-      <li><a id = "loginmenu" href="login.html">Login</a></li>
-      <li><a href="squat.html">Squat</a></li>
-      <li><a href="#">Record</a></li>
-      <li><a href="#">Mypage</a></li>
-    </ul>
-  </div>
-  <br>
-  <br>
-  <br>
   <div id="dvAuth">
     <div id="dvLogin">
     <div id="Join">
@@ -45,13 +30,13 @@
         <input type="text" id="height" name="height" class="input-text" placeholder="키">
         <input type="text" id="weight" name="weight" class="input-text" placeholder="몸무게">
 
-        <!-- <input type="password" id="joinRePassword" class="input-text" maxlength="17" placeholder="비밀번호 확인"> -->
         <ul class="btnGroup">
             <li id="liEmailJoinSubmit" class="waves-effect waves-teal btn-flat emailjoin">이메일으로 가입</li>
         </ul>
     </div>
     </div>
   </div>
+  <!--jquery, js, firebase-->
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
   <script type="text/javascript" src="js/bootstrap.js"></script>
 
@@ -63,10 +48,11 @@
 
 
   <script>
-    var firebaseEmailAuth;
-    var firebaseDatabase;
-    var userInfo;
+    var firebaseEmailAuth; //firebase email 인증 모듈 전역변수
+    var firebaseDatabase;  //firebase db 모듈 전역변수
+    var userInfo;          //사용자 정보
 
+    //firebase 정보
     const firebaseConfig = {
         apiKey: "AIzaSyCgxgXoIvYsy0jqugTu_mBpy1OspsaUGCg",
         authDomain: "test-900db.firebaseapp.com",
@@ -80,11 +66,12 @@
   
     // Initialize Firebase
     firebase.initializeApp(firebaseConfig) 
-
+    // firebase 인증 모듈
     firebaseEmailAuth = firebase.auth();
+    // firebase db 모듈
     firebaseDatabase = firebase.database();
 
-    //제이쿼리 
+    //jquery 
   $(document).ready(function(){
   
   //가입버튼 눌렀을 때 작동하는 함수
@@ -98,16 +85,11 @@
       height = $('#height').val();
       weight = $('#weight').val();
       
-//이메일로 가입 버튼 눌렀을 때 작동되는 함수 - firebase 인증 모듈
+//이메일로 가입 버튼 눌렀을 때 작동되는 함수
   firebaseEmailAuth.createUserWithEmailAndPassword(email, password).then(function(user) {
     
-    userInfo = user; //가입 후 callBack 함수로 생성된 유저의 정보가 user에 담겨서 넘어온다. 전역변수에 할당.
- 
-    //뭐가 찍히는지 직접 체크해보세요.
-    console.log("userInfo/"+userInfo); //오브젝트 타입
-    console.log("userInfo.currentUser/"+userInfo.currentUser); //안됨
-    console.log("userInfo.uid/"+userInfo.uid); //vPArtCHqPpOeIOpidEfug0Kgq3v1
-    console.log(name)
+    userInfo = user; 
+
     //성공했을 때 작동되는 함수
     logUser(); 
  
@@ -119,9 +101,9 @@
    
   });
  
-  //가입 성공했을 때 호출 되는 함수 - 위의 firebase의 인증 모듈과 다른 database 모듈임을 확인하자.
+  //가입 성공했을 때 호출 되는 함수
   function logUser(){
-    var ref = firebaseDatabase.ref("users/"+userInfo.uid); //저장될 곳을 users라는 부모 키를 레퍼런스로 지정.
+    var ref = firebaseDatabase.ref("users/"+userInfo.uid);
     
     //저장 형식
     var obj = {
@@ -129,22 +111,18 @@
         email: userEmail,
         height: height,
         weight: weight,
-
     };
 
-    ref.set(obj); // 고유한 자식 키가 하나 생셩이 되면서 json 삽입
+    ref.set(obj); 
     alert("가입성공");
  
-    //메인 페이지로 이동시키고 세션 저장시키기
+    //메인 페이지로 이동
     window.location.href = "/index.html"
 }
- 
- 
+
   });
 });
      
-    
-
  </script>
 
 </body>
